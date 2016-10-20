@@ -15,21 +15,25 @@ MKDIR ?=	mkdir
 INSTALL ?=	install -c
 STRIP ?=	strip
 
-BIN =	interval_tree_test
+BIN =	interval_tree_test rectangle_tree_test
 
 all: ${BIN}
 
-${BIN}: interval_tree_test.cpp IntervalTree.h
-	${CXX} ${CXXFLAGS} interval_tree_test.cpp -std=c++0x -o ${BIN}
+interval_tree_test: interval_tree_test.cpp IntervalTree.h
+	${CXX} ${CXXFLAGS} interval_tree_test.cpp -std=c++0x -o interval_tree_test
+
+rectangle_tree_test: rectangle_tree_test.cpp RectangleTree.h IntervalTree.h
+	${CXX} ${CXXFLAGS} rectangle_tree_test.cpp -std=c++0x -o rectangle_tree_test
 
 install: all
 	${MKDIR} -p ${DESTDIR}${PREFIX}/bin
 	${MKDIR} -p ${DESTDIR}${PREFIX}/include/intervaltree
-	${INSTALL} ${BIN} ${DESTDIR}${PREFIX}/bin
+	for $$bin in ${BIN}; do ${INSTALL} $$bin ${DESTDIR}${PREFIX}/bin; done
 	${INSTALL} IntervalTree.h ${DESTDIR}${PREFIX}/include/intervaltree
+	${INSTALL} RectangleTree.h ${DESTDIR}${PREFIX}/include/intervaltree
 
 install-strip: install
-	${STRIP} ${DESTDIR}${PREFIX}/bin/${BIN}
+	for $$bin in ${BIN}; do ${STRIP} ${DESTDIR}${PREFIX}/bin/$$bin; done
 
 .PHONY: clean
 
